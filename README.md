@@ -42,6 +42,7 @@ contract MyAwesomeBaseTest is MudTestFoundry {
 Using it in unit tests inside `my_mud_proj/contracts/test`
 
 ```Solidity
+import {MyCoolTableA} from "../../src/codegen/index.sol";
 import {MyAwesomeBaseTest} from "./MudTestFoundry.t.sol";
 
 contract MyUnitTest is MyAwesomeBaseTest {
