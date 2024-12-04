@@ -76,8 +76,9 @@ import "forge-std/console.sol";
 ${systems.map(system => `import { ${system.label} } from "../../src/systems/${system.label}.sol";`).join('\n')}`;
 
   const contractCode = `
+
 contract MudTestFoundry is Test {
-    IWorld private world;
+    IWorld internal world;
     address internal worldAddress;
     address private registrationSystemAddress;
     
