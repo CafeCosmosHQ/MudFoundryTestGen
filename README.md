@@ -66,7 +66,6 @@ contract MyUnitTest is MyAwesomeBaseTest {
 
 ```Solidity
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
 
 // import MUD core
 import { World } from "@latticexyz/world/src/World.sol";
@@ -80,8 +79,7 @@ import { BalanceTransferSystem } from "@latticexyz/world/src/modules/init/implem
 import { BatchCallSystem } from "@latticexyz/world/src/modules/init/implementations/BatchCallSystem.sol";
 import { RegistrationSystem } from "@latticexyz/world/src/modules/init/RegistrationSystem.sol";
 import { StoreSwitch } from "@latticexyz/store/src/StoreSwitch.sol";
-// import { Test } from "forge-std/test.sol";
-import { Test } from "./forge-dope/test.sol";
+import { Test } from "forge-std/test.sol";
 import { ResourceId, WorldResourceIdLib } from "@latticexyz/world/src/WorldResourceId.sol";
 import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
 import { WorldContextProviderLib } from "@latticexyz/world/src/WorldContext.sol";
@@ -109,8 +107,9 @@ import { QuestsDTOSystem } from "../../src/systems/QuestsDTOSystem.sol";
 import { QuestsSystem } from "../../src/systems/QuestsSystem.sol";
 import { TransformationsSystem } from "../../src/systems/TransformationsSystem.sol";
 import { WaterControllerSystem } from "../../src/systems/WaterControllerSystem.sol";
+
 contract MudTestFoundry is Test {
-    IWorld private world;
+    IWorld internal world;
     address internal worldAddress;
     address private registrationSystemAddress;
     
