@@ -6,7 +6,7 @@ We wanted to work in foundry as it can be a bit easy to lose control using `pnpm
 ## Args 
 `-o` or `--output` specify output path of the base test
 
-`-nb` or `--no-build` skips `pnpm mud build` which skips building the contracts. Useful if you want to generate the test and already have a `.mud/local/systems.json` that matches the current contracts. Hence if you haven't added or changed any tables or added or removed any systems
+`-nb` or `--no-build` skips `pnpm mud build` which skips building the contracts. Useful if you want to generate the test and already have a `.mud/local/systems.json` that matches the current contracts. Hence if you haven't added/changed/removed any tables or added/removed any systems
 
 ## Instructions
 place this in the contracts folder of your mud project (`my_mud_proj/contracts/foundryTestGen.js`)
