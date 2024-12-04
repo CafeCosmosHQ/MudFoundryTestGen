@@ -1,7 +1,7 @@
 # MudFoundryTestGen
 Generate a foundry base test that handles all deployment so you can use `forge test` instead of `mud test`
 
-We wanted to work in foundry to have a more familiar grip of the workflow rather than `pnpm mud test` so we built this to generate a base test that handles deploying and registering systems and tables. This is also useful to get a better understanding of how mud works for someone who is more foundry/solidity native.
+We wanted to work in foundry to have a more familiar grip of the workflow rather than using `pnpm mud test` so we built this to generate a base test that handles deploying and registering systems and tables. This is also useful to get a better understanding of how mud works for someone who is more foundry/solidity native.
 
 ## Args 
 `-o` or `--output` specify output path of the base test
