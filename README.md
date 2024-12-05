@@ -27,11 +27,11 @@ import {MudTestFoundry} from "./MudTestFoundry.t.sol";
 
 contract MyAwesomeBaseTest is MudTestFoundry {
 
-  string player = "bob"
+  string player = "bob";
   bool isCool = true;
   
   function setUp() public{
-    super.setUp()
+    super.setUp();
     MyCoolTableA.setIsCool(player, isCool);
     //rest of table configurations. Normally would happen in script/PostDeploy.s.sol
   }
@@ -48,11 +48,11 @@ import {MyAwesomeBaseTest} from "./MudTestFoundry.t.sol";
 contract MyUnitTest is MyAwesomeBaseTest {
 
   function setUp() public {
-    super.setUp()
+    super.setUp();
   }
 
   function test_isCool() public {
-    assertEq(true, MyCoolTableA.getIsCool(player))
+    assertEq(true, MyCoolTableA.getIsCool(player));
   }
 
   ...
