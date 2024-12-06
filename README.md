@@ -142,6 +142,7 @@ import { StackableItem } from "../../src/codegen/tables/StackableItem.sol";
 import { TransformationCategories } from "../../src/codegen/tables/TransformationCategories.sol";
 import { Transformations } from "../../src/codegen/tables/Transformations.sol";
 import { WaterController } from "../../src/codegen/tables/WaterController.sol";
+
 contract MudTestFoundry is Test {
 
     IWorld internal world;
