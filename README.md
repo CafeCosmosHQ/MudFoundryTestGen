@@ -89,32 +89,6 @@ import { WorldRegistrationSystem } from "@latticexyz/world/src/modules/init/impl
 import { ResourceIdLib } from "@latticexyz/store/src/ResourceId.sol";
 import { StoreCore } from "@latticexyz/store/src/StoreCore.sol";
 import { WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
-import "forge-std/console.sol";
-
-// Import systems
-// SPDX-License-Identifier: MIT
-
-// import MUD core
-import { World } from "@latticexyz/world/src/World.sol";
-import { IWorld } from "../../src/codegen/world/IWorld.sol";
-import { WorldFactory } from "@latticexyz/world/src/WorldFactory.sol";
-import { IModule } from "@latticexyz/world/src/IModule.sol";
-import { Module } from "@latticexyz/world/src/Module.sol";
-import { InitModule } from "@latticexyz/world/src/modules/init/InitModule.sol";
-import { AccessManagementSystem } from "@latticexyz/world/src/modules/init/implementations/AccessManagementSystem.sol";
-import { BalanceTransferSystem } from "@latticexyz/world/src/modules/init/implementations/BalanceTransferSystem.sol";
-import { BatchCallSystem } from "@latticexyz/world/src/modules/init/implementations/BatchCallSystem.sol";
-import { RegistrationSystem } from "@latticexyz/world/src/modules/init/RegistrationSystem.sol";
-import { StoreSwitch } from "@latticexyz/store/src/StoreSwitch.sol";
-import { Test } from "forge-std/test.sol";
-import { ResourceId, WorldResourceIdLib } from "@latticexyz/world/src/WorldResourceId.sol";
-import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
-import { WorldContextProviderLib } from "@latticexyz/world/src/WorldContext.sol";
-import { System } from "@latticexyz/world/src/System.sol";
-import { WorldRegistrationSystem } from "@latticexyz/world/src/modules/init/implementations/WorldRegistrationSystem.sol";
-import { ResourceIdLib } from "@latticexyz/store/src/ResourceId.sol";
-import { StoreCore } from "@latticexyz/store/src/StoreCore.sol";
-import { WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
 import { FieldLayout } from "@latticexyz/store/src/FieldLayout.sol";
 import "forge-std/console.sol";
 
