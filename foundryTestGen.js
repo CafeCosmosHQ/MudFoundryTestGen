@@ -116,6 +116,7 @@ ${systems.map(system => `import { ${system.label} } from "../../src/systems/${sy
 ${tables.map(table => `import { ${table} } from "../../src/codegen/tables/${table}.sol";`).join('\n')}`;
 
   const contractCode = `
+  
 contract MudTestFoundry is Test {
 
     IWorld internal world;
