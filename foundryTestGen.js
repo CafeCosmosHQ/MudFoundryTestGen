@@ -18,24 +18,6 @@ function getTables() {
   }
 }
 
-function cleanFunctionSignature(signature) {
-  if (!signature.startsWith('function')) return signature;
-  
-  // Remove 'function' keyword and everything after 'returns'
-  let cleaned = signature.replace('function ', '');
-  cleaned = cleaned.split(' returns ')[0];
-  
-  // Remove parameter names and whitespace between types
-  cleaned = cleaned.replace(/\((.*?)\)/, (match, params) => {
-    const types = params.split(',').map(param => {
-      return param.trim().split(' ')[0];
-    });
-    return `(${types.join(',')})`;
-  });
-  
-  return cleaned;
-}
-
 const dataTypes = [
   'uint8', 'uint16', 'uint24', 'uint32', 'uint40', 'uint48', 'uint56', 'uint64',
   'uint72', 'uint80', 'uint88', 'uint96', 'uint104', 'uint112', 'uint120', 'uint128',
