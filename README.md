@@ -92,6 +92,33 @@ import { WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.s
 import "forge-std/console.sol";
 
 // Import systems
+// SPDX-License-Identifier: MIT
+
+// import MUD core
+import { World } from "@latticexyz/world/src/World.sol";
+import { IWorld } from "../../src/codegen/world/IWorld.sol";
+import { WorldFactory } from "@latticexyz/world/src/WorldFactory.sol";
+import { IModule } from "@latticexyz/world/src/IModule.sol";
+import { Module } from "@latticexyz/world/src/Module.sol";
+import { InitModule } from "@latticexyz/world/src/modules/init/InitModule.sol";
+import { AccessManagementSystem } from "@latticexyz/world/src/modules/init/implementations/AccessManagementSystem.sol";
+import { BalanceTransferSystem } from "@latticexyz/world/src/modules/init/implementations/BalanceTransferSystem.sol";
+import { BatchCallSystem } from "@latticexyz/world/src/modules/init/implementations/BatchCallSystem.sol";
+import { RegistrationSystem } from "@latticexyz/world/src/modules/init/RegistrationSystem.sol";
+import { StoreSwitch } from "@latticexyz/store/src/StoreSwitch.sol";
+import { Test } from "forge-std/test.sol";
+import { ResourceId, WorldResourceIdLib } from "@latticexyz/world/src/WorldResourceId.sol";
+import { RESOURCE_SYSTEM } from "@latticexyz/world/src/worldResourceTypes.sol";
+import { WorldContextProviderLib } from "@latticexyz/world/src/WorldContext.sol";
+import { System } from "@latticexyz/world/src/System.sol";
+import { WorldRegistrationSystem } from "@latticexyz/world/src/modules/init/implementations/WorldRegistrationSystem.sol";
+import { ResourceIdLib } from "@latticexyz/store/src/ResourceId.sol";
+import { StoreCore } from "@latticexyz/store/src/StoreCore.sol";
+import { WorldResourceIdInstance } from "@latticexyz/world/src/WorldResourceId.sol";
+import { FieldLayout } from "@latticexyz/store/src/FieldLayout.sol";
+import "forge-std/console.sol";
+
+// Import systems
 import { CatalogueSystem } from "../../src/systems/CatalogueSystem.sol";
 import { CraftingSystem } from "../../src/systems/CraftingSystem.sol";
 import { LandConfigSystem } from "../../src/systems/LandConfigSystem.sol";
@@ -109,7 +136,40 @@ import { QuestsSystem } from "../../src/systems/QuestsSystem.sol";
 import { TransformationsSystem } from "../../src/systems/TransformationsSystem.sol";
 import { WaterControllerSystem } from "../../src/systems/WaterControllerSystem.sol";
 
+// Import tables
+import { ActiveStoves } from "../../src/codegen/tables/ActiveStoves.sol";
+import { CafeCosmosConfig } from "../../src/codegen/tables/CafeCosmosConfig.sol";
+import { Catalogue } from "../../src/codegen/tables/Catalogue.sol";
+import { CatalogueItem } from "../../src/codegen/tables/CatalogueItem.sol";
+import { ClaimedLevels } from "../../src/codegen/tables/ClaimedLevels.sol";
+import { ConfigAddresses } from "../../src/codegen/tables/ConfigAddresses.sol";
+import { CraftingRecipe } from "../../src/codegen/tables/CraftingRecipe.sol";
+import { Inventory } from "../../src/codegen/tables/Inventory.sol";
+import { ItemInfo } from "../../src/codegen/tables/ItemInfo.sol";
+import { LandCell } from "../../src/codegen/tables/LandCell.sol";
+import { LandInfo } from "../../src/codegen/tables/LandInfo.sol";
+import { LandItem } from "../../src/codegen/tables/LandItem.sol";
+import { LandItemCookingState } from "../../src/codegen/tables/LandItemCookingState.sol";
+import { LandPermissions } from "../../src/codegen/tables/LandPermissions.sol";
+import { LandQuest } from "../../src/codegen/tables/LandQuest.sol";
+import { LandQuestGroup } from "../../src/codegen/tables/LandQuestGroup.sol";
+import { LandQuestGroups } from "../../src/codegen/tables/LandQuestGroups.sol";
+import { LandQuestTaskProgress } from "../../src/codegen/tables/LandQuestTaskProgress.sol";
+import { LandTablesAndChairs } from "../../src/codegen/tables/LandTablesAndChairs.sol";
+import { LevelReward } from "../../src/codegen/tables/LevelReward.sol";
+import { Quest } from "../../src/codegen/tables/Quest.sol";
+import { QuestCollection } from "../../src/codegen/tables/QuestCollection.sol";
+import { QuestGroup } from "../../src/codegen/tables/QuestGroup.sol";
+import { QuestTask } from "../../src/codegen/tables/QuestTask.sol";
+import { Quests } from "../../src/codegen/tables/Quests.sol";
+import { Reward } from "../../src/codegen/tables/Reward.sol";
+import { RewardCollection } from "../../src/codegen/tables/RewardCollection.sol";
+import { StackableItem } from "../../src/codegen/tables/StackableItem.sol";
+import { TransformationCategories } from "../../src/codegen/tables/TransformationCategories.sol";
+import { Transformations } from "../../src/codegen/tables/Transformations.sol";
+import { WaterController } from "../../src/codegen/tables/WaterController.sol";
 contract MudTestFoundry is Test {
+
     IWorld internal world;
     address internal worldAddress;
     address private registrationSystemAddress;
@@ -140,6 +200,39 @@ contract MudTestFoundry is Test {
         worldAddress = address(world);
         
         StoreSwitch.setStoreAddress(address(world));
+
+        // Register tables
+        ActiveStoves.register();
+        CafeCosmosConfig.register();
+        Catalogue.register();
+        CatalogueItem.register();
+        ClaimedLevels.register();
+        ConfigAddresses.register();
+        CraftingRecipe.register();
+        Inventory.register();
+        ItemInfo.register();
+        LandCell.register();
+        LandInfo.register();
+        LandItem.register();
+        LandItemCookingState.register();
+        LandPermissions.register();
+        LandQuest.register();
+        LandQuestGroup.register();
+        LandQuestGroups.register();
+        LandQuestTaskProgress.register();
+        LandTablesAndChairs.register();
+        LevelReward.register();
+        Quest.register();
+        QuestCollection.register();
+        QuestGroup.register();
+        QuestTask.register();
+        Quests.register();
+        Reward.register();
+        RewardCollection.register();
+        StackableItem.register();
+        TransformationCategories.register();
+        Transformations.register();
+        WaterController.register();
         
         setupFunctionSelectors();
         
@@ -185,133 +278,133 @@ contract MudTestFoundry is Test {
     }
 
     function setupFunctionSelectors() private {
-        addFunctionSelector("Catalogue", "function getTotalCost((uint256 itemId, uint256 quantity)[] items) view returns (uint256 totalCost)");
-        addFunctionSelector("Catalogue", "function getTotalCostAndSufficientBalanceToPurchaseItem(uint256 landId, uint256 itemId, uint256 quantity) view returns (bool sufficient, uint256 totalCost)");
-        addFunctionSelector("Catalogue", "function getTotalCostAndSufficientBalanceToPurchaseItems(uint256 landId, (uint256 itemId, uint256 quantity)[] items) view returns (bool sufficient, uint256 totalCost)");
-        addFunctionSelector("Catalogue", "function purchaseCatalogueItem(uint256 landId, uint256 itemId, uint256 quantity)");
-        addFunctionSelector("Catalogue", "function purchaseCatalogueItems(uint256 landId, (uint256 itemId, uint256 quantity)[] items)");
-        addFunctionSelector("Catalogue", "function upsertCatalogueItems((uint256 itemId, uint256 price, uint256 catalogueId, bool exists)[] items)");
+        addFunctionSelector("Catalogue", "getTotalCost((uint256,uint256)[])");
+        addFunctionSelector("Catalogue", "getTotalCostAndSufficientBalanceToPurchaseItem(uint256,uint256,uint256)");
+        addFunctionSelector("Catalogue", "getTotalCostAndSufficientBalanceToPurchaseItems(uint256,(uint256,uint256)[])");
+        addFunctionSelector("Catalogue", "purchaseCatalogueItem(uint256,uint256,uint256)");
+        addFunctionSelector("Catalogue", "purchaseCatalogueItems(uint256,(uint256,uint256)[])");
+        addFunctionSelector("Catalogue", "upsertCatalogueItems((uint256,uint256,uint256,bool)[])");
 
-        addFunctionSelector("Crafting", "function craftRecipe(uint256 landId, uint256 output)");
-        addFunctionSelector("Crafting", "function createRecipe((uint256 output, uint256 outputQuantity, uint256 xp, bool exists, uint256[] inputs, uint256[] quantities) recipe)");
-        addFunctionSelector("Crafting", "function createRecipes((uint256 output, uint256 outputQuantity, uint256 xp, bool exists, uint256[] inputs, uint256[] quantities)[] recipes)");
-        addFunctionSelector("Crafting", "function removeRecipe((uint256 output, uint256 outputQuantity, uint256 xp, bool exists, uint256[] inputs, uint256[] quantities) recipe)");
+        addFunctionSelector("Crafting", "craftRecipe(uint256,uint256)");
+        addFunctionSelector("Crafting", "createRecipe((uint256,uint256,uint256,bool,uint256[],uint256[]))");
+        addFunctionSelector("Crafting", "createRecipes((uint256,uint256,uint256,bool,uint256[],uint256[])[])");
+        addFunctionSelector("Crafting", "removeRecipe((uint256,uint256,uint256,bool,uint256[],uint256[]))");
 
-        addFunctionSelector("LandConfig", "function approveLandOperator(uint256 landId, address operator, bool status)");
-        addFunctionSelector("LandConfig", "function getActiveStoves(uint256 stoveId) view returns (uint256)");
-        addFunctionSelector("LandConfig", "function getCookingCost() view returns (uint256)");
-        addFunctionSelector("LandConfig", "function getLandInfo(uint256 landId) view returns ((uint256 limitX, uint256 limitY, uint256 activeTables, uint256 activeStoves, bool isInitialized, uint32 seed, uint256 tokenBalance, uint256 cumulativeXp, uint256 lastLevelClaimed, uint256[] yBound) landInfo)");
-        addFunctionSelector("LandConfig", "function getLandTablesAndChairsAddress() view returns (address)");
-        addFunctionSelector("LandConfig", "function getSoftCostPerSquare() view returns (uint256)");
-        addFunctionSelector("LandConfig", "function getSoftDestinationAddress() view returns (address)");
-        addFunctionSelector("LandConfig", "function getSoftToken() view returns (address)");
-        addFunctionSelector("LandConfig", "function setChair(uint256 _chair, bool _isChair)");
-        addFunctionSelector("LandConfig", "function setChunkSize(uint256 chunkSize)");
-        addFunctionSelector("LandConfig", "function setCookingCost(uint256 cookingCost_)");
-        addFunctionSelector("LandConfig", "function setIsStackable(uint256 _base, uint256 _input, bool _isStackable)");
-        addFunctionSelector("LandConfig", "function setItemConfigAddress(address itemConfigAddress_)");
-        addFunctionSelector("LandConfig", "function setItems((uint256 itemId, (bool nonRemovable, bool nonPlaceable, bool isTool, bool isTable, bool isChair, bool isRotatable, uint256 themeId, uint256 itemCategory, uint256 returnsItem) itemInfo)[] items)");
-        addFunctionSelector("LandConfig", "function setItems(address items)");
-        addFunctionSelector("LandConfig", "function setLandNFTs(address landNFTs_)");
-        addFunctionSelector("LandConfig", "function setLandQuestTaskProgressUpdateAddress(address landQuestTaskProgressUpdateAddress_)");
-        addFunctionSelector("LandConfig", "function setLandTablesAndChairsAddress(address landTablesAndChairsAddress_)");
-        addFunctionSelector("LandConfig", "function setLandTransformAddress(address landTransformAddress_)");
-        addFunctionSelector("LandConfig", "function setMaxLevel(uint256 maxLevel_)");
-        addFunctionSelector("LandConfig", "function setMinStartingLimits(uint256 minStartingX, uint256 minStartingY)");
-        addFunctionSelector("LandConfig", "function setNonPlaceable(uint256 _nonPlaceable, bool _placeable)");
-        addFunctionSelector("LandConfig", "function setNonPlaceableItems(uint256[] items)");
-        addFunctionSelector("LandConfig", "function setNonRemovable(uint256 _nonRemovables, bool _removable)");
-        addFunctionSelector("LandConfig", "function setNonRemovableItems(uint256[] items)");
-        addFunctionSelector("LandConfig", "function setRedistributor(address _redistributor)");
-        addFunctionSelector("LandConfig", "function setReturnItems(uint256[] items, uint256[] itemsReturned)");
-        addFunctionSelector("LandConfig", "function setReturnsItem(uint256 _itemId, uint256 _itemReturned)");
-        addFunctionSelector("LandConfig", "function setRotatable(uint256[] _itemIds, bool _isRotatable)");
-        addFunctionSelector("LandConfig", "function setSoftCost(uint256 softCost_)");
-        addFunctionSelector("LandConfig", "function setSoftDestination(address softDestination_)");
-        addFunctionSelector("LandConfig", "function setSoftToken(address softToken_)");
-        addFunctionSelector("LandConfig", "function setStackableItems((uint256 base, uint256 input, bool stackable)[] stackableItems)");
-        addFunctionSelector("LandConfig", "function setTable(uint256 _table, bool _isTable)");
-        addFunctionSelector("LandConfig", "function setTool(uint256 _tool, bool _isTool)");
-        addFunctionSelector("LandConfig", "function setVesting(address vesting_)");
+        addFunctionSelector("LandConfig", "approveLandOperator(uint256,address,bool)");
+        addFunctionSelector("LandConfig", "getActiveStoves(uint256)");
+        addFunctionSelector("LandConfig", "getCookingCost");
+        addFunctionSelector("LandConfig", "getLandInfo(uint256)");
+        addFunctionSelector("LandConfig", "getLandTablesAndChairsAddress");
+        addFunctionSelector("LandConfig", "getSoftCostPerSquare");
+        addFunctionSelector("LandConfig", "getSoftDestinationAddress");
+        addFunctionSelector("LandConfig", "getSoftToken");
+        addFunctionSelector("LandConfig", "setChair(uint256,bool)");
+        addFunctionSelector("LandConfig", "setChunkSize(uint256)");
+        addFunctionSelector("LandConfig", "setCookingCost(uint256)");
+        addFunctionSelector("LandConfig", "setIsStackable(uint256,uint256,bool)");
+        addFunctionSelector("LandConfig", "setItemConfigAddress(address)");
+        addFunctionSelector("LandConfig", "setItems((uint256,(bool,bool,bool,bool,bool,bool,uint256,uint256,uint256))[])");
+        addFunctionSelector("LandConfig", "setItems(address)");
+        addFunctionSelector("LandConfig", "setLandNFTs(address)");
+        addFunctionSelector("LandConfig", "setLandQuestTaskProgressUpdateAddress(address)");
+        addFunctionSelector("LandConfig", "setLandTablesAndChairsAddress(address)");
+        addFunctionSelector("LandConfig", "setLandTransformAddress(address)");
+        addFunctionSelector("LandConfig", "setMaxLevel(uint256)");
+        addFunctionSelector("LandConfig", "setMinStartingLimits(uint256,uint256)");
+        addFunctionSelector("LandConfig", "setNonPlaceable(uint256,bool)");
+        addFunctionSelector("LandConfig", "setNonPlaceableItems(uint256[])");
+        addFunctionSelector("LandConfig", "setNonRemovable(uint256,bool)");
+        addFunctionSelector("LandConfig", "setNonRemovableItems(uint256[])");
+        addFunctionSelector("LandConfig", "setRedistributor(address)");
+        addFunctionSelector("LandConfig", "setReturnItems(uint256[],uint256[])");
+        addFunctionSelector("LandConfig", "setReturnsItem(uint256,uint256)");
+        addFunctionSelector("LandConfig", "setRotatable(uint256[],bool)");
+        addFunctionSelector("LandConfig", "setSoftCost(uint256)");
+        addFunctionSelector("LandConfig", "setSoftDestination(address)");
+        addFunctionSelector("LandConfig", "setSoftToken(address)");
+        addFunctionSelector("LandConfig", "setStackableItems((uint256,uint256,bool)[])");
+        addFunctionSelector("LandConfig", "setTable(uint256,bool)");
+        addFunctionSelector("LandConfig", "setTool(uint256,bool)");
+        addFunctionSelector("LandConfig", "setVesting(address)");
 
-        addFunctionSelector("LandCreation", "function calculateLandCost(uint256 landId, uint256 x1, uint256 y1) view returns (uint256 softCost)");
-        addFunctionSelector("LandCreation", "function calculateLandCost(uint256 x0, uint256 y0) view returns (uint256 softCost)");
-        addFunctionSelector("LandCreation", "function createLand(uint256 limitX, uint256 limitY) returns (uint256 landId)");
-        addFunctionSelector("LandCreation", "function createPlayerInitialFreeLand() returns (uint256 landId)");
-        addFunctionSelector("LandCreation", "function expandLand(uint256 landId, uint256 x1, uint256 y1)");
-        addFunctionSelector("LandCreation", "function generateChunk(uint256 landId)");
-        addFunctionSelector("LandCreation", "function setInitialLandItems((uint256 x, uint256 y, uint256 itemId)[] items, uint256 landIndex, uint256 _initialLandItemsDefaultIndex)");
-        addFunctionSelector("LandCreation", "function setInitialLandLimits(uint256 limitX, uint256 limitY)");
-        addFunctionSelector("LandCreation", "function setLandName(uint256 landId, string name)");
+        addFunctionSelector("LandCreation", "calculateLandCost(uint256,uint256,uint256)");
+        addFunctionSelector("LandCreation", "calculateLandCost(uint256,uint256)");
+        addFunctionSelector("LandCreation", "createLand(uint256,uint256)");
+        addFunctionSelector("LandCreation", "createPlayerInitialFreeLand");
+        addFunctionSelector("LandCreation", "expandLand(uint256,uint256,uint256)");
+        addFunctionSelector("LandCreation", "generateChunk(uint256)");
+        addFunctionSelector("LandCreation", "setInitialLandItems((uint256,uint256,uint256)[],uint256,uint256)");
+        addFunctionSelector("LandCreation", "setInitialLandLimits(uint256,uint256)");
+        addFunctionSelector("LandCreation", "setLandName(uint256,string)");
 
-        addFunctionSelector("LandERC1155Holder", "function onERC1155BatchReceived(address, address, uint256[], uint256[], bytes) returns (bytes4)");
-        addFunctionSelector("LandERC1155Holder", "function onERC1155Received(address, address, uint256, uint256, bytes) returns (bytes4)");
+        addFunctionSelector("LandERC1155Holder", "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)");
+        addFunctionSelector("LandERC1155Holder", "onERC1155Received(address,address,uint256,uint256,bytes)");
 
-        addFunctionSelector("LandItemInteraction", "function moveItem(uint256 landId, uint256 srcX, uint256 srcY, uint256 dstX, uint256 dstY)");
-        addFunctionSelector("LandItemInteraction", "function placeItem(uint256 landId, uint256 x, uint256 y, uint256 itemId)");
-        addFunctionSelector("LandItemInteraction", "function removeItem(uint256 landId, uint256 x, uint256 y)");
-        addFunctionSelector("LandItemInteraction", "function timestampCheck()");
-        addFunctionSelector("LandItemInteraction", "function toggleRotation(uint256 landId, uint256 x, uint256 y, uint256 z)");
-        addFunctionSelector("LandItemInteraction", "function updateStove(uint256 landId, uint256 x, uint256 y)");
+        addFunctionSelector("LandItemInteraction", "moveItem(uint256,uint256,uint256,uint256,uint256)");
+        addFunctionSelector("LandItemInteraction", "placeItem(uint256,uint256,uint256,uint256)");
+        addFunctionSelector("LandItemInteraction", "removeItem(uint256,uint256,uint256)");
+        addFunctionSelector("LandItemInteraction", "timestampCheck");
+        addFunctionSelector("LandItemInteraction", "toggleRotation(uint256,uint256,uint256,uint256)");
+        addFunctionSelector("LandItemInteraction", "updateStove(uint256,uint256,uint256)");
 
-        addFunctionSelector("LandItems", "function depositItems(uint256 landId, uint256[] itemIds, uint256[] amounts)");
-        addFunctionSelector("LandItems", "function itemBalanceOf(uint256 landId, uint256 itemId) view returns (uint256)");
-        addFunctionSelector("LandItems", "function itemBalanceOfBatch(uint256 landId, uint256[] ids) view returns (uint256[])");
-        addFunctionSelector("LandItems", "function withdrawItems(uint256 landId, uint256[] itemIds, uint256[] amounts)");
+        addFunctionSelector("LandItems", "depositItems(uint256,uint256[],uint256[])");
+        addFunctionSelector("LandItems", "itemBalanceOf(uint256,uint256)");
+        addFunctionSelector("LandItems", "itemBalanceOfBatch(uint256,uint256[])");
+        addFunctionSelector("LandItems", "withdrawItems(uint256,uint256[],uint256[])");
 
-        addFunctionSelector("LandQuests", "function activateAllQuestGroups(uint256 landId)");
-        addFunctionSelector("LandQuests", "function activateLandQuestGroup(uint256 landId, uint256 questGroupId)");
-        addFunctionSelector("LandQuests", "function getActiveLandQuestGroups(uint256 landId) view returns ((uint256 landId, uint256 questGroupId, (bool active, uint256 numberOfQuests, uint256 numberOfCompletedQuests, bool claimed, uint256 expiresAt) landQuestGroup, (uint256 landId, uint256 questGroupId, uint256 questId, (uint256 numberOfTasks, uint256 numberOfCompletedTasks, bool claimed, bool active, uint256 expiresAt) landQuest, (bytes32 taskId, uint256 landId, uint256 questGroupId, uint256 questId, uint256 taskType, bytes32 key, uint256 quantity, (uint256 taskProgress, bool taskCompleted) landQuestTask)[] landQuestTasks)[] landQuests)[])");
-        addFunctionSelector("LandQuests", "function getLandQuestGroup(uint256 landId, uint256 questGroupId) view returns ((uint256 landId, uint256 questGroupId, (bool active, uint256 numberOfQuests, uint256 numberOfCompletedQuests, bool claimed, uint256 expiresAt) landQuestGroup, (uint256 landId, uint256 questGroupId, uint256 questId, (uint256 numberOfTasks, uint256 numberOfCompletedTasks, bool claimed, bool active, uint256 expiresAt) landQuest, (bytes32 taskId, uint256 landId, uint256 questGroupId, uint256 questId, uint256 taskType, bytes32 key, uint256 quantity, (uint256 taskProgress, bool taskCompleted) landQuestTask)[] landQuestTasks)[] landQuests))");
-        addFunctionSelector("LandQuests", "function removeAllExpiredQuestGroups(uint256 landId)");
+        addFunctionSelector("LandQuests", "activateAllQuestGroups(uint256)");
+        addFunctionSelector("LandQuests", "activateLandQuestGroup(uint256,uint256)");
+        addFunctionSelector("LandQuests", "getActiveLandQuestGroups(uint256)");
+        addFunctionSelector("LandQuests", "getLandQuestGroup(uint256,uint256)");
+        addFunctionSelector("LandQuests", "removeAllExpiredQuestGroups(uint256)");
 
-        addFunctionSelector("LandScenarioUserTesting", "function createUserTestScerarioLand(address player, uint256 limitX, uint256 limitY, (uint256 x, uint256 y, uint256 itemId, uint256 placementTime, uint256 stackIndex, bool isRotated, uint256 dynamicUnlockTime, uint256 dynamicTimeoutTime)[] landItems)");
-        addFunctionSelector("LandScenarioUserTesting", "function resetUserTestLandScenario(uint256 landId, uint256 limitX, uint256 limitY, (uint256 x, uint256 y, uint256 itemId, uint256 placementTime, uint256 stackIndex, bool isRotated, uint256 dynamicUnlockTime, uint256 dynamicTimeoutTime)[] landItems)");
+        addFunctionSelector("LandScenarioUserTesting", "createUserTestScerarioLand(address,uint256,uint256,(uint256,uint256,uint256,uint256,uint256,bool,uint256,uint256)[])");
+        addFunctionSelector("LandScenarioUserTesting", "resetUserTestLandScenario(uint256,uint256,uint256,(uint256,uint256,uint256,uint256,uint256,bool,uint256,uint256)[])");
 
-        addFunctionSelector("LandTokens", "function depositTokens(uint256 landId, uint256 amount)");
-        addFunctionSelector("LandTokens", "function tokenBalanceOf(uint256 landId) view returns (uint256)");
-        addFunctionSelector("LandTokens", "function withdrawTokens(uint256 landId, uint256 amount)");
+        addFunctionSelector("LandTokens", "depositTokens(uint256,uint256)");
+        addFunctionSelector("LandTokens", "tokenBalanceOf(uint256)");
+        addFunctionSelector("LandTokens", "withdrawTokens(uint256,uint256)");
 
-        addFunctionSelector("LandView", "function getActiveTables(uint256 landId) view returns (uint256)");
-        addFunctionSelector("LandView", "function getChairsOfTables(uint256 landId, uint256 x, uint256 y) view returns (uint256[3])");
-        addFunctionSelector("LandView", "function getLandItems(uint256 landId, uint256 x, uint256 y) view returns ((uint256 x, uint256 y, uint256 itemId, uint256 placementTime, uint256 stackIndex, bool isRotated, uint256 dynamicUnlockTime, uint256 dynamicTimeoutTime)[] landItems)");
-        addFunctionSelector("LandView", "function getLandItems3d(uint256 landId) view returns ((uint256 x, uint256 y, uint256 itemId, uint256 placementTime, uint256 stackIndex, bool isRotated, uint256 dynamicUnlockTime, uint256 dynamicTimeoutTime)[][][] land3d)");
-        addFunctionSelector("LandView", "function getPlacementTime(uint256 landId, uint256 x, uint256 y) view returns (uint256)");
-        addFunctionSelector("LandView", "function getRotation(uint256 landId, uint256 x, uint256 y) view returns (bool)");
-        addFunctionSelector("LandView", "function getTablesOfChairs(uint256 landId, uint256 x, uint256 y) view returns (uint256[3])");
+        addFunctionSelector("LandView", "getActiveTables(uint256)");
+        addFunctionSelector("LandView", "getChairsOfTables(uint256,uint256,uint256)");
+        addFunctionSelector("LandView", "getLandItems(uint256,uint256,uint256)");
+        addFunctionSelector("LandView", "getLandItems3d(uint256)");
+        addFunctionSelector("LandView", "getPlacementTime(uint256,uint256,uint256)");
+        addFunctionSelector("LandView", "getRotation(uint256,uint256,uint256)");
+        addFunctionSelector("LandView", "getTablesOfChairs(uint256,uint256,uint256)");
 
-        addFunctionSelector("Leveling", "function unlockAllLevels(uint256 landId)");
-        addFunctionSelector("Leveling", "function unlockLevel(uint256 landId, uint256 level)");
-        addFunctionSelector("Leveling", "function unlockLevels(uint256 landId, uint256[] levels)");
-        addFunctionSelector("Leveling", "function upsertLevelReward((uint256 level, uint256 tokens, uint256 cumulativeXp, uint256[] items) levelReward)");
-        addFunctionSelector("Leveling", "function upsertLevelRewards((uint256 level, uint256 tokens, uint256 cumulativeXp, uint256[] items)[] levelRewards)");
+        addFunctionSelector("Leveling", "unlockAllLevels(uint256)");
+        addFunctionSelector("Leveling", "unlockLevel(uint256,uint256)");
+        addFunctionSelector("Leveling", "unlockLevels(uint256,uint256[])");
+        addFunctionSelector("Leveling", "upsertLevelReward((uint256,uint256,uint256,uint256[]))");
+        addFunctionSelector("Leveling", "upsertLevelRewards((uint256,uint256,uint256,uint256[])[])");
 
-        addFunctionSelector("QuestsDTO", "function addNewQuest((uint256 id, (uint256 duration, bool exists, uint256[] rewardIds, string questName, bytes32[] tasks) quest, (bytes32 taskId, (uint256 questId, uint256 taskType, bytes32 key, uint256 quantity, bool exists, string name, bytes32[] taskKeys) task)[] tasks, (uint256 id, (uint256 itemId, uint256 rewardType, uint256 quantity) reward)[] rewards) questDTO)");
-        addFunctionSelector("QuestsDTO", "function addNewQuests((uint256 id, (uint256 duration, bool exists, uint256[] rewardIds, string questName, bytes32[] tasks) quest, (bytes32 taskId, (uint256 questId, uint256 taskType, bytes32 key, uint256 quantity, bool exists, string name, bytes32[] taskKeys) task)[] tasks, (uint256 id, (uint256 itemId, uint256 rewardType, uint256 quantity) reward)[] rewards)[] quests)");
-        addFunctionSelector("QuestsDTO", "function addRewards((uint256 id, (uint256 itemId, uint256 rewardType, uint256 quantity) reward)[] rewardDTO)");
-        addFunctionSelector("QuestsDTO", "function getAllActiveQuestGroups() view returns ((uint256 id, (uint256 startsAt, uint256 expiresAt, bool sequential, uint256 questGroupType, uint256[] questIds, uint256[] rewardIds) questGroup, (uint256 id, (uint256 duration, bool exists, uint256[] rewardIds, string questName, bytes32[] tasks) quest, (bytes32 taskId, (uint256 questId, uint256 taskType, bytes32 key, uint256 quantity, bool exists, string name, bytes32[] taskKeys) task)[] tasks, (uint256 id, (uint256 itemId, uint256 rewardType, uint256 quantity) reward)[] rewards)[] quests, (uint256 id, (uint256 itemId, uint256 rewardType, uint256 quantity) reward)[] rewards)[] questGroups)");
-        addFunctionSelector("QuestsDTO", "function getAllQuests() view returns ((uint256 id, (uint256 duration, bool exists, uint256[] rewardIds, string questName, bytes32[] tasks) quest, (bytes32 taskId, (uint256 questId, uint256 taskType, bytes32 key, uint256 quantity, bool exists, string name, bytes32[] taskKeys) task)[] tasks, (uint256 id, (uint256 itemId, uint256 rewardType, uint256 quantity) reward)[] rewards)[] quests)");
-        addFunctionSelector("QuestsDTO", "function getQuest(uint256 questId) view returns ((uint256 id, (uint256 duration, bool exists, uint256[] rewardIds, string questName, bytes32[] tasks) quest, (bytes32 taskId, (uint256 questId, uint256 taskType, bytes32 key, uint256 quantity, bool exists, string name, bytes32[] taskKeys) task)[] tasks, (uint256 id, (uint256 itemId, uint256 rewardType, uint256 quantity) reward)[] rewards) questDTO)");
-        addFunctionSelector("QuestsDTO", "function updateQuest(uint256 questId, (uint256 duration, bool exists, uint256[] rewardIds, string questName, bytes32[] tasks) quest)");
-        addFunctionSelector("QuestsDTO", "function upsertQuestCollections((uint256 questGroupType, uint256[] questIds)[] questCollections)");
-        addFunctionSelector("QuestsDTO", "function upsertRewardColletions((uint256 rewardType, uint256[] rewardIds)[] rewardCollections)");
-        addFunctionSelector("QuestsDTO", "function upsertTransformationCategories((uint256 base, uint256 input, uint256[] categories)[] transformationCategories)");
+        addFunctionSelector("QuestsDTO", "addNewQuest((uint256,(uint256,bool,uint256[],string,bytes32[]),(bytes32,(uint256,uint256,bytes32,uint256,bool,string,bytes32[]))[],(uint256,(uint256,uint256,uint256))[]))");
+        addFunctionSelector("QuestsDTO", "addNewQuests((uint256,(uint256,bool,uint256[],string,bytes32[]),(bytes32,(uint256,uint256,bytes32,uint256,bool,string,bytes32[]))[],(uint256,(uint256,uint256,uint256))[])[])");
+        addFunctionSelector("QuestsDTO", "addRewards((uint256,(uint256,uint256,uint256))[])");
+        addFunctionSelector("QuestsDTO", "getAllActiveQuestGroups");
+        addFunctionSelector("QuestsDTO", "getAllQuests");
+        addFunctionSelector("QuestsDTO", "getQuest(uint256)");
+        addFunctionSelector("QuestsDTO", "updateQuest(uint256,(uint256,bool,uint256[],string,bytes32[]))");
+        addFunctionSelector("QuestsDTO", "upsertQuestCollections((uint256,uint256[])[])");
+        addFunctionSelector("QuestsDTO", "upsertRewardColletions((uint256,uint256[])[])");
+        addFunctionSelector("QuestsDTO", "upsertTransformationCategories((uint256,uint256,uint256[])[])");
 
-        addFunctionSelector("Quests", "function createDailyQuestIfNotExists()");
-        addFunctionSelector("Quests", "function createWeeklyQuestIfNotExists()");
-        addFunctionSelector("Quests", "function getAllActiveQuestGroupIds() view returns (uint256[] questGroupIds)");
+        addFunctionSelector("Quests", "createDailyQuestIfNotExists");
+        addFunctionSelector("Quests", "createWeeklyQuestIfNotExists");
+        addFunctionSelector("Quests", "getAllActiveQuestGroupIds");
 
-        addFunctionSelector("Transformations", "function getTransformation(uint256 base, uint256 input) view returns ((uint256 next, uint256 yield, uint256 inputNext, uint256 yieldQuantity, uint256 unlockTime, uint256 timeout, uint256 timeoutYield, uint256 timeoutYieldQuantity, uint256 timeoutNext, bool isRecipe, bool isWaterCollection, uint256 xp, bool exists) transformation)");
-        addFunctionSelector("Transformations", "function setTransformation((uint256 base, uint256 input, uint256 next, uint256 yield, uint256 inputNext, uint256 yieldQuantity, uint256 unlockTime, uint256 timeout, uint256 timeoutYield, uint256 timeoutYieldQuantity, uint256 timeoutNext, bool isRecipe, bool isWaterCollection, uint256 xp, bool exists) newTransformation)");
-        addFunctionSelector("Transformations", "function setTransformations((uint256 base, uint256 input, uint256 next, uint256 yield, uint256 inputNext, uint256 yieldQuantity, uint256 unlockTime, uint256 timeout, uint256 timeoutYield, uint256 timeoutYieldQuantity, uint256 timeoutNext, bool isRecipe, bool isWaterCollection, uint256 xp, bool exists)[] newTransformations)");
+        addFunctionSelector("Transformations", "getTransformation(uint256,uint256)");
+        addFunctionSelector("Transformations", "setTransformation((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,bool,uint256,bool))");
+        addFunctionSelector("Transformations", "setTransformations((uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256,bool,bool,uint256,bool)[])");
 
-        addFunctionSelector("WaterController", "function axiomV2Callback(uint64 sourceChainId, address caller, bytes32 querySchema, uint256 queryId, bytes32[] axiomResults, bytes extraData)");
-        addFunctionSelector("WaterController", "function axiomV2OffchainCallback(uint64 sourceChainId, address caller, bytes32 querySchema, uint256 queryId, bytes32[] axiomResults, bytes extraData)");
-        addFunctionSelector("WaterController", "function axiomV2QueryAddress() view returns (address)");
-        addFunctionSelector("WaterController", "function getWaterYieldTime() view returns (uint256)");
-        addFunctionSelector("WaterController", "function InitialiseWaterController(address _axiomV2QueryAddress, uint64 _callbackSourceChainId, bytes32 _querySchema)");
-        addFunctionSelector("WaterController", "function setAxionV2QueryAddress(address _axiomV2QueryAddress)");
-        addFunctionSelector("WaterController", "function setWaterControllerParameters(uint256 numSamples, uint256 blockInterval, uint256 minYieldTime, uint256 maxYieldTime, uint256 endBlockSlippage, int256 minDelta, int256 maxDelta)");
+        addFunctionSelector("WaterController", "axiomV2Callback(uint64,address,bytes32,uint256,bytes32[],bytes)");
+        addFunctionSelector("WaterController", "axiomV2OffchainCallback(uint64,address,bytes32,uint256,bytes32[],bytes)");
+        addFunctionSelector("WaterController", "axiomV2QueryAddress");
+        addFunctionSelector("WaterController", "getWaterYieldTime");
+        addFunctionSelector("WaterController", "InitialiseWaterController(address,uint64,bytes32)");
+        addFunctionSelector("WaterController", "setAxionV2QueryAddress(address)");
+        addFunctionSelector("WaterController", "setWaterControllerParameters(uint256,uint256,uint256,uint256,uint256,int256,int256)");
     }
 }
 ```
