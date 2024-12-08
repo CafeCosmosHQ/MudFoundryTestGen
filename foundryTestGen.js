@@ -220,8 +220,7 @@ function parseArgs() {
 
 function runMudGen() {
   try {
-    execSync('pnpm mud tablegen', { stdio: 'inherit' });
-    execSync('pnpm mud worldgen', { stdio: 'inherit' });
+    execSync('pnpm mud build', { stdio: 'inherit' });
     return true;
   } catch (error) {
     console.error('Error running mud generators:', error.message);
@@ -232,14 +231,14 @@ function runMudGen() {
 async function main() {
   const options = parseArgs();
 
-  if (!fs.existsSync('.mud/local')) {
-    console.error('Error: .mud/local directory not found');
-    process.exit(1);
-  }
-
   if (!options.skipBuild) {
     console.log('Running mud generators...');
     if (!runMudGen()) process.exit(1);
+  }
+  
+  if (!fs.existsSync('.mud/local')) {
+    console.error('Error: .mud/local directory not found');
+    process.exit(1);
   }
 
   try {
