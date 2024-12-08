@@ -230,7 +230,7 @@ function runMudGen() {
 
 async function main() {
   const options = parseArgs();
-  
+
   if (!options.skipBuild) {
     console.log('Running mud generators...');
     if (!runMudGen()) process.exit(1);
