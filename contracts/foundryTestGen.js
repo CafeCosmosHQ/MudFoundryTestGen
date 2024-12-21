@@ -56,8 +56,11 @@ function generateSolidityTest(systems) {
   
   systems.forEach(system => {
     const name = system.label;
+    const namespacePrefix = system.namespace === "" ? "" : system.namespace.concat("__"); 
     const cleanName = name.endsWith('System') ? name.slice(0, -6) : name;
-    functionSelectors[cleanName] = system.abi
+    const cleanNameWithPrefix = namespacePrefix.concat(cleanName);
+    console.log("cleanName", cleanName);
+    functionSelectors[cleanName] = system.worldAbi
       .filter(abi => !abi.startsWith('error') && !abi.startsWith('event'))
       .map(sig => {
         if (!sig.startsWith('function')) return sig;
@@ -76,10 +79,15 @@ function generateSolidityTest(systems) {
             return `(${types.join(',')})`;
           });
           // console.log(cleanSignature(cleaned));
-        return cleanSignature(cleaned);
+        console.log("cleanSignature(cleaned)", cleanSignature(cleaned));
+        return [cleanSignature(cleaned).replace(namespacePrefix, ""), cleanSignature(cleaned)];
       });
+      console.log(functionSelectors);
   });
 
+  const namespaces = Array.from(new Set(systems.map(system => system.namespaceLabel)));
+  console.log(namespaces);
+  namespaces.forEach(namespace => {console.log(namespace)});
 
   const tables = getTables();
   
@@ -110,7 +118,7 @@ import { FieldLayout } from "@latticexyz/store/src/FieldLayout.sol";
 import "forge-std/console.sol";
 
 // Import systems
-${systems.map(system => `import { ${system.label} } from "../../src/systems/${system.label}.sol";`).join('\n')}
+${systems.map(system => `import { ${system.label} } from "${system.namespaceLabel === "" ? "../../src/systems" : `../../src/namespaces/${system.namespaceLabel}/systems`}/${system.label}.sol";`).join('\n')}
 
 // Import tables
 ${tables.map(table => `import { ${table} } from "../../src/codegen/tables/${table}.sol";`).join('\n')}`;
@@ -128,9 +136,15 @@ contract MudTestFoundry is Test {
     using WorldResourceIdInstance for ResourceId;
     
     mapping(bytes32 => string[]) public functionSelector;
+    mapping(bytes32 => string[]) public worldFunctionSelector;
 
-    function addFunctionSelector(bytes32 key, string memory value) private {
-        functionSelector[key].push(value);
+    function addFunctionSelector(
+      bytes32 system,
+      string memory selector,              
+      string memory worldSelector          
+    ) private {
+        functionSelector[system].push(selector);
+        worldFunctionSelector[system].push(worldSelector);
     }
 
     function setUp() public virtual {
@@ -150,6 +164,11 @@ contract MudTestFoundry is Test {
         
         StoreSwitch.setStoreAddress(address(world));
 
+        // Register namespaces
+        ${namespaces.map(namespace => {
+          return `world.registerNamespace(WorldResourceIdLib.encodeNamespace(bytes14("${namespace}")));`
+        }).join('\n        ')}
+
         // Register tables
         ${tables.map(table => `${table}.register();`).join('\n        ')}
         
@@ -157,20 +176,21 @@ contract MudTestFoundry is Test {
         
         ${systems.map(system => {
           const cleanName = system.label.endsWith('System') ? system.label.slice(0, -6) : system.label;
-          return `_registerSystem(new ${system.label}(), "${cleanName}", true);`
+          return `_registerSystem(new ${system.label}(), "${cleanName}", true, "${system.namespaceLabel}");`
         }).join('\n        ')}
     }
 
-    function _registerSystem(System systemContract, bytes32 systemName, bool publicAccess) internal {
+    function _registerSystem(System systemContract, bytes32 systemName, bool publicAccess, bytes14 namespace) internal {
         bytes16 systemName16 = truncateString(systemName);
         ResourceId systemId = WorldResourceIdLib.encode({
             typeId: RESOURCE_SYSTEM,
-            namespace: "",
+            namespace: namespace,
             name: systemName16
         });
         world.registerSystem(systemId, systemContract, publicAccess);
         for (uint i = 0; i < functionSelector[systemName].length; i++) {
-            world.registerRootFunctionSelector(systemId, functionSelector[systemName][i], functionSelector[systemName][i]);
+            world.registerRootFunctionSelector(systemId, functionSelector[systemName][i], worldFunctionSelector[systemName][i]);
+            world.registerFunctionSelector(systemId, functionSelector[systemName][i]);
         }
     }
 
@@ -185,10 +205,9 @@ contract MudTestFoundry is Test {
     }
 
     function setupFunctionSelectors() private {
-        ${Object.entries(functionSelectors).map(([name, funcs], idx, arr) => {
-          const selectors = funcs.map(func => `addFunctionSelector("${name}", "${func}");`).join('\n        ');
-          return idx < arr.length - 1 ? selectors + '\n' : selectors;
-        }).join('\n        ')}
+      ${Object.entries(functionSelectors).map(([name, funcs]) => 
+        funcs.map(func => `\taddFunctionSelector("${name}", "${func[0]}", "${func[1]}");`).join('\n        ')
+      ).join('\n    ')}
     }
 }`;
 
@@ -223,8 +242,37 @@ function runMudGen() {
     execSync('pnpm mud build', { stdio: 'inherit' });
     return true;
   } catch (error) {
-    console.error('Error running mud generators:', error.message);
-    return false;
+    console.log('Build failed, attempting to clean up test files...');
+    
+    // Files to clean up
+      
+    let emptyMTF = `import { Test } from "forge-std/test.sol";
+    
+    contract MudTestFoundry is Test {
+    
+      address internal worldAddress;
+
+      function setUp() public virtual {
+      
+      }
+
+    } 
+    `  
+
+    fs.writeFileSync('test/util/MudTestFoundry.t.sol', emptyMTF);
+    
+    // Only retry if we actually deleted some files
+    console.log('Retrying build...');
+    try {
+      execSync('pnpm mud build', { stdio: 'inherit' });
+      return true;
+    } catch (retryError) {
+      console.error('Error during retry:', retryError.message);
+      return false;
+    }
+    
+    // console.error('Error running mud generators:', error.message);
+    // return false;
   }
 }
 
@@ -233,19 +281,26 @@ async function main() {
 
   if (!options.skipBuild) {
     console.log('Running mud generators...');
-    if (!runMudGen()) process.exit(1);
+    if (!runMudGen()) {
+      console.log("FAILED");
+      process.exit(1);
+    }  
   }
-
+  console.log("HERE");
   try {
+    console.log("HERE2");
     const systems = JSON.parse(fs.readFileSync('./.mud/local/systems.json', 'utf8')).systems;
     if (!Array.isArray(systems)) throw new Error('Invalid systems.json format');
     
+    console.log("HERE2");
     const outputDir = path.dirname(options.output);
     if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
     
+    console.log("HERE2");
     fs.writeFileSync(options.output, generateSolidityTest(systems));
     console.log(`Successfully generated ${options.output}`);
   } catch (err) {
+    console.log("HERE2");
     console.error('Error:', err.message);
     process.exit(1);
   }
