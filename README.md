@@ -1,3 +1,5 @@
+`NOTE: This only works with a single root namespace (I started working on a solution in the other branch if anyone wants to add the functionality feel free)`
+
 # MudFoundryTestGen
 Generate a foundry base test that handles all deployment so you can use `forge test` instead of `mud test`
 
